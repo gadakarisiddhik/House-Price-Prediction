@@ -23,3 +23,9 @@ def split_train_test(data, test_ration):
     test_indieces = shuffled[:test_set_size]
     train_indieces = shuffled[test_set_size:]
     return data.iloc[train_indieces], data.iloc[test_indieces]
+
+train_set, test_set = split_train_test(
+    housing,
+    0.2
+)
+print(f"Rows in train set: {len(train_set)}\nRows in test set: {len(test_set)}")
