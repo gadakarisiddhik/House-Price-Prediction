@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedShuffleSplit
+from pandas.plotting import scatter_matrix
 
 housing = pd.read_csv("dataset/boston.csv")
 print(housing.head())
@@ -53,3 +54,12 @@ for train_index, test_index in split.split(housing, housing['chas']):
 
 print(strat_test_set['chas'].value_counts())
 print(strat_train_set['chas'].value_counts())
+
+# Looking for Correlations
+corr_matrix = housing.corr()
+print(corr_matrix['medv'].sort_values(ascending=False))
+
+arrributes = ['medv','rm','zn','lstat']
+print(scatter_matrix(housing[arrributes], figsize=(12, 8)))
+
+# time : 1:26:09 
