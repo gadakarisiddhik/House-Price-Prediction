@@ -25,7 +25,7 @@ print("\n")
 
 # Dataset ki basic information dekhne ke liye
 # Isse columns, data types aur missing values ka idea milta hai
-# print(housing.info())
+print(housing.info())
 
 
 # Dataset ke important columns:
@@ -160,18 +160,12 @@ for train_index, test_index in split.split(housing, housing["chas"]):
 # print(strat_train_set["chas"].value_counts())
 
 
+housing = strat_train_set.copy()
+
+
 # ============================================================
 # Looking for Correlations
 # ============================================================
-
-
-# Sabhi numerical columns ke beech correlation calculate kar rahe hain
-corr_matrix = housing.corr()
-
-
-# "medv" ke saath baaki columns ka correlation dekhne ke liye
-# Highest correlation se lowest correlation tak sort kar rahe hain
-# print(corr_matrix["medv"].sort_values(ascending=False))
 
 
 # Scatter matrix ke liye important attributes select kar rahe hain
@@ -201,7 +195,57 @@ print(
         kind="scatter",
         x="rm",
         y="medv",
-        alpha=0.1
+        alpha=0.5
     )
 )
-plt.show()
+# plt.show()
+
+## Trying out attribute comnbinations
+housing["taxrm"] = housing["tax"] / housing["rm"]
+print(housing["taxrm"])
+
+# Sabhi numerical columns ke beech correlation calculate kar rahe hain
+corr_matrix = housing.corr()
+
+
+# "medv" ke saath baaki columns ka correlation dekhne ke liye
+# Highest correlation se lowest correlation tak sort kar rahe hain
+print(corr_matrix["medv"].sort_values(ascending=False))
+
+
+# TAXRM = average number of rooms * Tax
+# MEDV = house ki median value
+# Ye graph rooms aur house price ke relationship ko show karega
+print(
+    housing.plot(
+        kind="scatter",
+        x="taxrm",
+        y="medv",
+        alpha=0.5
+    )
+)
+# plt.show()
+
+## Missing Attributes
+"""
+1. get rid the missing data points
+2. get rif the hole attribute
+3. set the value to 0, mean or median
+"""
+
+# Option 3
+median = housing["rm"].median() # Compute Median for option threee
+print(median)
+
+housing["rm"].fillna(median)
+print(housing["rm"].fillna(median))
+
+print(housing.shape)
+
+from sklearn.impute import SimpleImputer
+imputer = SimpleImputer(strategy = "median")
+imputer.fit(housing)
+print(imputer.statistics_)
+X = imputer.transform(housing)
+housing_tr = pd.DataFrame(X, columns= housing.columns)
+print(housing_tr.describe())
